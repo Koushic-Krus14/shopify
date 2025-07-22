@@ -27,7 +27,7 @@ def home():
             cursor.execute('INSERT INTO users (name) VALUES (?)', (username,))
             conn.commit()
             conn.close()
-    return render_template('index.html', username=username)
+    return render_template('form.html', username=username)
 
 
 @app.route('/download', methods=['GET'])
