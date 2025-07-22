@@ -1,65 +1,45 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file
-import psycopg2
 import os
+import sqlite3
+import pandas as pd
+from flask import Flask, render_template, request, redirect, send_file
 
 app = Flask(__name__)
+DB_PATH = 'database.db'
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
-
-def get_db_connection():
-    return psycopg2.connect(DATABASE_URL)
-
-
-@app.before_first_request
-def create_table():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            name TEXT NOT NULL
-        );
-    ''')
+# Create table if not exists
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('CREATE TABLE IF NOT EXISTS users (name TEXT)')
     conn.commit()
-    cur.close()
     conn.close()
 
+init_db()
 
 @app.route('/', methods=['GET', 'POST'])
-def index():
+def home():
+    username = None
     if request.method == 'POST':
-        name = request.form['name']
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute('INSERT INTO users (name) VALUES (%s);', (name,))
-        conn.commit()
-        cur.close()
-        conn.close()
-        return redirect(url_for('display', name=name))
-    return render_template('form.html')
+        username = request.form.get('username')
+        if username:
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute('INSERT INTO users (name) VALUES (?)', (username,))
+            conn.commit()
+            conn.close()
+    return render_template('index.html', username=username)
 
 
-@app.route('/display/<name>')
-def display(name):
-    return render_template('display.html', name=name)
-
-
-@app.route('/download')
+@app.route('/download', methods=['GET'])
 def download():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT name FROM users;')
-    rows = cur.fetchall()
-    cur.close()
+    conn = sqlite3.connect(DB_PATH)
+    df = pd.read_sql_query("SELECT name FROM users", conn)
+    file_path = 'names.csv'
+    df.to_csv(file_path, index=False)
     conn.close()
-
-    with open('names.txt', 'w') as f:
-        for row in rows:
-            f.write(f"{row[0]}\n")
-
-    return send_file('names.txt', as_attachment=True)
+    return send_file(file_path, as_attachment=True)
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=10000)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(debug=True, host='0.0.0.0', port=port)
