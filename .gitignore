@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# VSCode / IDE configs
+.vscode/
+.idea/
+
+# Python egg info
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Mac / Linux / Windows system files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Flask instance folders
+instance/
+
+# Output files
+names.txt
+
+# Pytest cache
+.pytest_cache/
+
+# Environment variables / security keys
+.env
+*.env
+
+# Render build cache (optional)
+.render-build/
