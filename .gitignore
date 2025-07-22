@@ -1,43 +1,12 @@
-# Byte-compiled / optimized / DLL files
+# Ignore Python cache
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
 
-# Virtual environments
-.venv/
+# Ignore virtual environments
 venv/
-ENV/
-env/
 
-# VSCode / IDE configs
-.vscode/
-.idea/
+# Ignore database file (optional; keep it local only)
+database.db
 
-# Python egg info
-*.egg-info/
-dist/
-build/
-.eggs/
-
-# Mac / Linux / Windows system files
+# macOS
 .DS_Store
-Thumbs.db
-
-# Logs
-*.log
-
-# Flask instance folders
-instance/
-
-# Output files
-names.txt
-
-# Pytest cache
-.pytest_cache/
-
-# Environment variables / security keys
-.env
-*.env
-
-# Render build cache (optional)
-.render-build/
