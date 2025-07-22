@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-DATABASE_URL = os.environ.get('postgresql://shopfi_db_user:KkEiHyzjqO9Pz5H83nNwj0fQhjdMZzbm@dpg-d1vmar2dbo4c73flg0k0-a.oregon-postgres.render.com/shopfi_db')
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
 
 def get_db_connection():
